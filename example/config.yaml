@@ -1,0 +1,102 @@
+global:
+  version_required: ">0.1.0"
+  chartRepo:
+    url: https://charts.hub.io
+    username: admin
+    secret: a12345678
+
+packages:
+  k3s: 
+    localPath: ./packages/k3s
+    type: file
+    targetPath: /usr/local/bin
+  installsh:
+    localPath: ./packages/install.sh
+    type: file
+    targetPath: /usr/local/bin 
+  docker:
+    localPath: ./packages/docker
+    targetPath: /tmp/docker
+    install: 
+      - /tmp/docker/install.sh
+    uninstall:
+      - /tmp/docker/uninstall.sh 
+
+charts:
+  metallb:
+    path: ./charts/metallb
+    version: v4.5.6
+    namespace: metallb-system
+    releaseName: metallb
+    valueFile: values.yaml
+    timeout: 5m
+    values: {}
+    repo:
+      url: https://metallb.github.io/metallb
+  longhorn:
+    path: ./charts/longhorn
+    version: v1.7.2
+    values: {}
+    repo: 
+      url: https://charts.longhorn.io
+
+node1: &node-01
+  host: 192.168.100.10
+  hostname: k3s-master-1
+  rootPassword: <PASSWORD>
+  pre_install:
+    - k3s 
+    - installsh
+  post_install:
+    - docker 
+
+node2: &node-02
+  host: 192.168.100.11
+  hostname: k3s-master-1
+  rootPassword: <PASSWORD>
+
+node3: &node-03
+  host: 192.168.100.12
+  hostname: k3s-master-3
+  rootPassword: <PASSWORD>
+
+node4: &node-04
+  host: 192.168.100.13
+  hostname: k3s-master-4
+  rootPassword: <PASSWORD>
+
+cluster1: &k3s-1 
+  master:
+    config:
+      disable:
+        - traefik
+        - servicelb
+        - local-storage
+      flannel-backend: "vxlan"
+    members:
+      - *node-01 
+  agent:
+    config:
+      kubelet-arg:
+        - --max-pods=100
+    members: 
+      - *node-02
+      - *node-03
+  charts:
+    - metallb 
+    - longhorn
+
+cluster2: &k3s-2
+  master: 
+    config:
+      disable:
+        - traefik
+        - servicelb
+        - local-storage
+      flannel-backend: "vxlan"
+    members:
+      - *node-01
+      - *node-03
+      - *node-04
+
+install: *k3s-1
