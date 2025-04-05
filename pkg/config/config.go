@@ -1,57 +1,58 @@
 package config
 
 import (
-	"encoding/json"
 	"os"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 type Chart struct {
-	Name        string                 `json:"name"`
-	ReleaseName string                 `json:"release_name"`
-	Namespace   string                 `json:"namespace"`
-	Path        string                 `json:"path"`
-	Values      map[string]interface{} `json:"values"`
-	Timeout     time.Duration          `json:"timeout"`
-	Repo        *ChartRepo             `json:"repo"`
+	Name        string                 `yaml:"name"`
+	ReleaseName string                 `yaml:"release_name"`
+	Namespace   string                 `yaml:"namespace"`
+	Path        string                 `yaml:"path"`
+	Values      map[string]interface{} `yaml:"values"`
+	Timeout     time.Duration          `yaml:"timeout"`
+	Repo        *ChartRepo             `yaml:"repo"`
 }
 
 type ChartRepo struct {
-	Url      string `json:"url"`
-	Username string `json:"username"`
-	Secret   string `json:"secret"`
+	Url      string `yaml:"url"`
+	Username string `yaml:"username"`
+	Secret   string `yaml:"secret"`
 }
 
 type Node struct {
-	Host         string   `json:"host"`
-	Hostname     string   `json:"hostname"`
-	Port         string   `json:"port"`
-	RootPassword string   `json:"root_password"`
-	PreInstall   []string `json:"pre_install"`
-	PostInstall  []string `json:"post_install"`
+	Host         string   `yaml:"host"`
+	Hostname     string   `yaml:"hostname"`
+	Port         string   `yaml:"port"`
+	RootPassword string   `yaml:"root_password"`
+	PreInstall   []string `yaml:"pre_install"`
+	PostInstall  []string `yaml:"post_install"`
 }
 
 type Cluster struct {
-	Master    ClusterRole `json:"master"`
-	Agent     ClusterRole `json:"agent"`
-	Charts    []Chart     `json:"charts"`
-	Manifests []string    `json:"manifests"`
+	Master    ClusterRole `yaml:"master"`
+	Agent     ClusterRole `yaml:"agent"`
+	Charts    []string    `yaml:"charts"`
+	Manifests []string    `yaml:"manifests"`
 }
 
 type ClusterRole struct {
-	Config  map[string]interface{} `json:"config"`
-	Members []Node                 `json:"members"`
+	Config  map[string]interface{} `yaml:"config"`
+	Members []Node                 `yaml:"members"`
 }
 
 type GlobalSetting struct {
-	VersiobRequired string     `json:"version_required"`
-	Repo            *ChartRepo `json:"repo"`
+	VersiobRequired string     `yaml:"version_required"`
+	Repo            *ChartRepo `yaml:"repo"`
 }
 
 type Config struct {
-	GlobalSetting GlobalSetting    `json:"global"`
-	Charts        map[string]Chart `json:"charts"`
-	Install       Cluster          `json:"install"`
+	GlobalSetting GlobalSetting    `yaml:"global"`
+	Charts        map[string]Chart `yaml:"charts"`
+	Install       Cluster          `yaml:"install"`
 }
 
 func Load(file string) (*Config, error) {
@@ -60,7 +61,7 @@ func Load(file string) (*Config, error) {
 		return nil, err
 	}
 	var cfg Config
-	err = json.Unmarshal(data, &cfg)
+	err = yaml.Unmarshal(data, &cfg)
 	if err != nil {
 		return nil, err
 	}

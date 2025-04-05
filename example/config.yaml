@@ -43,7 +43,7 @@ charts:
 node1: &node-01
   host: 192.168.100.10
   hostname: k3s-master-1
-  rootPassword: <PASSWORD>
+  root_password: <PASSWORD>
   pre_install:
     - k3s 
     - installsh
@@ -96,7 +96,5 @@ cluster2: &k3s-2
       flannel-backend: "vxlan"
     members:
       - *node-01
-      - *node-03
-      - *node-04
 
-install: *k3s-1
+install: *k3s-2
