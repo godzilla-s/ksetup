@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"ksetup/pkg/config"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -22,6 +23,15 @@ type Object struct {
 	RepoURL         string
 	RepoUser        string
 	RepoPass        string
+}
+
+func ToObject(chart config.Chart) *Object {
+	obj := &Object{
+		Name:      chart.Name,
+		Namespace: chart.Namespace,
+	}
+
+	return obj
 }
 
 type Client struct {

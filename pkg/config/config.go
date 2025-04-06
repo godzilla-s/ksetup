@@ -7,6 +7,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type Package struct {
+	Name       string   `yaml:"name"`
+	Type       string   `yaml:"type"`
+	LocalPath  string   `yaml:"local_path"`
+	TargetPath string   `yaml:"target_path"`
+	PreExec    []string `yaml:"pre_exec"`
+	Exec       []string `yaml:"exec"`
+	PostExec   []string `yaml:"post_exec"`
+}
+
 type Chart struct {
 	Name        string                 `yaml:"name"`
 	ReleaseName string                 `yaml:"release_name"`
@@ -33,6 +43,7 @@ type Node struct {
 }
 
 type Cluster struct {
+	Provider  string      `yaml:"provider"`
 	Master    ClusterRole `yaml:"master"`
 	Agent     ClusterRole `yaml:"agent"`
 	Charts    []string    `yaml:"charts"`

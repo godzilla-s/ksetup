@@ -8,11 +8,9 @@ global:
 packages:
   k3s: 
     localPath: ./packages/k3s
-    type: file
     targetPath: /usr/local/bin
   installsh:
     localPath: ./packages/install.sh
-    type: file
     targetPath: /usr/local/bin 
   docker:
     localPath: ./packages/docker
@@ -53,19 +51,20 @@ node1: &node-01
 node2: &node-02
   host: 192.168.100.11
   hostname: k3s-master-1
-  rootPassword: <PASSWORD>
+  root_password: <PASSWORD>
 
 node3: &node-03
   host: 192.168.100.12
   hostname: k3s-master-3
-  rootPassword: <PASSWORD>
+  root_password: <PASSWORD>
 
 node4: &node-04
   host: 192.168.100.13
   hostname: k3s-master-4
-  rootPassword: <PASSWORD>
+  root_password: <PASSWORD>
 
 cluster1: &k3s-1 
+  provider: k3s
   master:
     config:
       disable:

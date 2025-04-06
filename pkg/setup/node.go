@@ -7,8 +7,6 @@ import (
 	"ksetup/pkg/log"
 	"ksetup/pkg/setup/engine"
 	"ksetup/pkg/setup/engine/k3s"
-
-	"github.com/sirupsen/logrus"
 )
 
 type ClusterNode struct {
@@ -16,7 +14,9 @@ type ClusterNode struct {
 	isInitialized bool
 	client        *remote.Client
 	engine        engine.Engine
-	log           *logrus.Entry
+	preInstalls   []installation
+	postInstalls  []installation
+	log           *log.Entry
 }
 
 func newClusterNode(provider string, conf *config.Node, log *log.Logger) (*ClusterNode, error) {
@@ -43,7 +43,6 @@ func newClusterNode(provider string, conf *config.Node, log *log.Logger) (*Clust
 
 	cn := &ClusterNode{
 		client: client,
-		log:    logEntry,
 		engine: e,
 	}
 	return cn, nil
@@ -63,4 +62,8 @@ func (c *ClusterNode) Status() error {
 
 func (c *ClusterNode) StartEngine() error {
 	return c.engine.Start()
+}
+
+func (c *ClusterNode) GetKubeConfig() ([]byte, error) {
+	return c.client.ReadFile("/etc/rancher/k3s/k3s.yaml")
 }

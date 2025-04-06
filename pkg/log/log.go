@@ -14,6 +14,10 @@ type Logger struct {
 	log *logrus.Logger
 }
 
+type Entry struct {
+	*logrus.Entry
+}
+
 func New(opt Option) *Logger {
 	log := logrus.New()
 	if opt.LogFile != "" {

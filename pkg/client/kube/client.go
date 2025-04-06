@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"io"
 	"ksetup/pkg/client/chart"
+	"ksetup/pkg/log"
 	"os"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/cli-runtime/pkg/genericiooptions"
 	"k8s.io/client-go/discovery"
@@ -24,10 +24,10 @@ import (
 type Client struct {
 	dynamic    dynamic.Interface
 	restConfig *rest.Config
-	log        *logrus.Logger
+	log        *log.Logger
 }
 
-func New(masterUrl string, kubeConfig []byte, log *logrus.Logger) (*Client, error) {
+func New(masterUrl string, kubeConfig []byte, log *log.Logger) (*Client, error) {
 
 	apiConfig, err := clientcmd.Load(kubeConfig)
 	if err != nil {
